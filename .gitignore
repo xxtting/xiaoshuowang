@@ -1,0 +1,37 @@
+# 依赖文件
+node_modules/
+vendor/
+
+# 环境配置文件
+.env
+.env.local
+.env.production
+
+# 日志文件
+logs/
+*.log
+
+# 缓存文件
+cache/
+runtime/
+
+# 上传文件
+uploads/
+static/uploads/
+
+# IDE文件
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# 操作系统文件
+.DS_Store
+Thumbs.db
+
+# 安装锁定文件
+install.lock
+
+# 临时文件
+temp/
+tmp/
