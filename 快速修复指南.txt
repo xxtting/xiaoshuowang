@@ -1,0 +1,70 @@
+========================================
+    快速修复指南 - 数据库配置问题
+========================================
+
+【问题】
+访问 init_tables.php 提示：错误：数据库配置不完整
+
+【原因】
+服务器上的 database.php 文件内容不正确
+
+【快速解决方法】
+
+方法一：使用配置修复工具（推荐）
+--------------------------------
+1. 访问：http://您的域名/admin/fix_config.php
+2. 填写数据库信息：
+   - 数据库主机：localhost
+   - 数据库端口：3306
+   - 数据库名称：您的数据库名
+   - 数据库用户名：您的用户名
+   - 数据库密码：您的密码
+3. 点击"保存配置"
+4. 访问：http://您的域名/admin/init_tables.php 初始化表
+
+方法二：手动修改配置文件
+--------------------------
+1. 编辑文件：app/backend/config/database.php
+2. 修改以下内容：
+
+<?php
+define('DB_HOST', 'localhost');
+define('DB_PORT', '3306');
+define('DB_NAME', '您的数据库名');
+define('DB_USER', '您的用户名');
+define('DB_PASS', '您的密码');
+define('DB_CHARSET', 'utf8mb4');
+define('DB_PREFIX', '');
+
+return [
+    'host' => DB_HOST,
+    'port' => DB_PORT,
+    'database' => DB_NAME,
+    'username' => DB_USER,
+    'password' => DB_PASS,
+    'charset' => DB_CHARSET,
+    'prefix' => DB_PREFIX,
+    'options' => [
+        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+        PDO::ATTR_EMULATE_PREPARES => false,
+    ],
+];
+?>
+
+3. 保存文件
+4. 访问：http://您的域名/admin/init_tables.php
+
+【检测配置】
+-----------
+访问：http://您的域名/admin/check_config.php
+可以查看配置是否正确
+
+【重要提醒】
+-----------
+1. 必须使用本次更新的 xiaoshuowang_app_final.zip
+2. 必须先修复数据库配置
+3. 然后才能初始化表
+4. 最后才能使用后台功能
+
+========================================

@@ -1,0 +1,65 @@
+========================================
+    重要说明 - 数据库配置问题
+========================================
+
+【问题现象】
+访问后台页面出现以下错误：
+- Warning: Use of undefined constant DB_HOST
+- 数据库连接失败
+
+【根本原因】
+服务器上的 database.php 文件配置不正确
+
+【解决方法】
+
+第一步：修改数据库配置
+----------------------
+编辑文件：app/backend/config/database.php
+
+修改以下内容（将 your_password_here 改为实际密码）：
+
+define('DB_HOST', 'localhost');      // 数据库主机
+define('DB_PORT', '3306');           // 数据库端口  
+define('DB_NAME', '数据库名');        // 数据库名称
+define('DB_USER', '用户名');          // 数据库用户名
+define('DB_PASS', '密码');            // 数据库密码（必须修改）
+
+第二步：检测配置
+----------------
+访问：http://您的域名/admin/check_config.php
+
+这个页面会显示：
+- 配置文件是否存在
+- 常量是否正确定义
+- 数据库是否能连接
+
+第三步：初始化数据库表
+----------------------
+访问：http://您的域名/admin/init_tables.php
+
+这会创建以下表：
+- system_settings (系统设置表)
+- ai_settings (AI设置表)
+- sys_log (系统日志表)
+- user_favorite (用户收藏表)
+
+【文件清单】
+------------
+本次更新包含以下修复：
+1. backend/config/database.php - 数据库配置
+2. admin/users.php - 用户管理
+3. admin/content.php - 内容管理
+4. admin/category.php - 分类管理
+5. admin/settings.php - 系统设置
+6. admin/ai_settings.php - AI设置
+7. admin/backup.php - 数据库备份
+8. admin/check_config.php - 配置检测（新增）
+9. admin/init_tables.php - 初始化表
+
+【打包文件】
+------------
+文件名：xiaoshuowang_app_v3.zip
+大小：93 KB
+包含：13个文件夹，44个文件
+
+========================================

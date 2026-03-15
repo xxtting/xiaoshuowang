@@ -1,0 +1,151 @@
+{
+  "name": "小说网系统 - APP目录生成配置",
+  "version": "1.0.0",
+  "description": "配置哪些文件需要复制到app目录，哪些需要排除",
+  
+  "source_dir": ".",
+  "target_dir": "./app",
+  
+  "include": {
+    "files": [
+      "index.php",
+      ".htaccess",
+      "README.md"
+    ],
+    
+    "directories": {
+      "backend": {
+        "description": "PHP后端API",
+        "recursive": true,
+        "exclude": [
+          "*.log",
+          "cache/*",
+          "tmp/*",
+          "test_*",
+          "*.test.php"
+        ]
+      },
+      "install": {
+        "description": "安装系统",
+        "recursive": true,
+        "exclude": []
+      },
+      "admin": {
+        "description": "管理后台",
+        "recursive": true,
+        "exclude": []
+      },
+      "public": {
+        "description": "前端资源",
+        "recursive": true,
+        "exclude": []
+      },
+      "database": {
+        "description": "数据库文件",
+        "recursive": true,
+        "exclude": []
+      }
+    }
+  },
+  
+  "exclude": {
+    "patterns": [
+      // 部署和开发文件
+      "deploy.*",
+      "*.bat",
+      "*.sh",
+      "SETUP_*",
+      "GITHUB_*",
+      "DEPLOYMENT_*",
+      "UPLOAD_*",
+      "PACKAGE_*",
+      "INSTALL.md",
+      
+      // 临时和缓存文件
+      "*.tmp",
+      "*.log",
+      "*.cache",
+      "Thumbs.db",
+      ".DS_Store",
+      
+      // 版本控制
+      ".git",
+      ".gitignore",
+      ".svn",
+      
+      // 开发工具和测试文件
+      "generate_*",
+      "test_*",
+      "fix_*",
+      "reset_*",
+      "update_*",
+      "app_generator_*",
+      
+      // 其他项目文件
+      "frontend",
+      "-p"
+    ],
+    
+    "directories": [
+      "node_modules",
+      "vendor",
+      "tmp",
+      "temp",
+      "logs"
+    ]
+  },
+  
+  "create_directories": [
+    "runtime",
+    "runtime/cache",
+    "public/uploads",
+    "backend/runtime"
+  ],
+  
+  "permissions": {
+    "files": {
+      "index.php": 644,
+      ".htaccess": 644,
+      "backend/.htaccess": 644,
+      "public/.htaccess": 644
+    },
+    "directories": {
+      "public/uploads": 777,
+      "runtime": 777,
+      "runtime/cache": 777
+    }
+  },
+  
+  "post_generation": {
+    "create_file_list": true,
+    "validate_files": true,
+    "show_statistics": true,
+    "clean_temp_files": true
+  },
+  
+  "validation": {
+    "required_files": [
+      "index.php",
+      "backend/index.php",
+      "backend/app/Core/Database.php",
+      "install/index.php",
+      "admin/index.php",
+      "public/index.html",
+      "database/structure.sql"
+    ],
+    
+    "required_directories": [
+      "backend",
+      "install",
+      "admin",
+      "public",
+      "database"
+    ]
+  },
+  
+  "output": {
+    "file_list": "FILES.md",
+    "log_file": "generation.log",
+    "statistics": true
+  }
+}

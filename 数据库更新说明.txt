@@ -1,0 +1,60 @@
+========================================
+    数据库结构更新说明
+========================================
+
+【更新内容】
+
+1. 新增表：
+   - system_settings (系统设置表)
+   - ai_settings (AI设置表)
+   - user_favorite (用户收藏表)
+
+2. 更新表：
+   - sys_log (系统日志表) - 添加索引优化
+
+3. 初始化数据：
+   - system_settings 表添加默认配置
+   - ai_settings 表添加默认配置
+
+【表结构对比】
+
+旧版本表：
+- sys_config
+- novel_category
+- novel
+- novel_chapter
+- user
+- admin_user
+- ai_novel_generate
+- wechat_config
+- user_read_history
+- sys_log
+
+新版本表（新增3个）：
+- sys_config
+- system_settings ✨ 新增
+- ai_settings ✨ 新增
+- novel_category
+- novel
+- novel_chapter
+- user
+- user_favorite ✨ 新增
+- admin_user
+- ai_novel_generate
+- wechat_config
+- user_read_history
+- sys_log
+
+【部署建议】
+
+1. 全新安装：
+   直接导入 structure.sql 即可
+
+2. 已有数据升级：
+   运行 init_tables.php 自动创建新表
+   或手动执行SQL添加新表
+
+【文件位置】
+app/database/structure.sql
+
+========================================

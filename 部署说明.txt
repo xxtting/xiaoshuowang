@@ -1,0 +1,47 @@
+========================================
+    小说网系统 - 部署说明
+========================================
+
+【文件名】
+xiaoshuowang_app.zip
+
+【部署步骤】
+
+1. 上传文件
+   - 将 xiaoshuowang_app.zip 上传到服务器网站根目录
+   - 解压到当前目录
+
+2. 配置数据库
+   - 编辑文件：backend/config/database.php
+   - 修改以下配置：
+     define('DB_HOST', 'localhost');      // 数据库主机
+     define('DB_NAME', '数据库名');        // 数据库名
+     define('DB_USER', '用户名');          // 数据库用户名
+     define('DB_PASS', '密码');            // 数据库密码
+
+3. 设置权限
+   - runtime/ 目录设为 755
+   - public/uploads/ 目录设为 755
+
+4. 初始化数据库表
+   - 访问：http://您的域名/admin/init_tables.php
+   - 点击初始化按钮
+
+5. 访问网站
+   - 前台：http://您的域名/
+   - 后台：http://您的域名/admin/
+
+【后台功能】
+- 系统设置：/admin/settings.php
+- AI设置：/admin/ai_settings.php
+- 数据库备份：/admin/backup.php
+- 用户管理：/admin/users.php
+- 内容管理：/admin/content.php
+- 分类管理：/admin/category.php
+
+【注意事项】
+- 必须先修改数据库配置
+- 必须运行 init_tables.php 初始化表
+- 安装完成后删除 install/ 目录
+
+========================================

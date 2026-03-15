@@ -1,0 +1,59 @@
+========================================
+    紧急修复 - 数据库配置问题
+========================================
+
+【问题】
+访问后台页面提示：错误：数据库配置不完整
+
+【解决方案】
+
+方法一：修改 config.php（推荐）
+--------------------------------
+1. 编辑文件：app/admin/config.php
+2. 修改数据库配置：
+
+<?php
+define('DB_HOST', 'localhost');      // 数据库主机
+define('DB_PORT', '3306');           // 数据库端口
+define('DB_NAME', '您的数据库名');    // 数据库名称
+define('DB_USER', '您的用户名');      // 数据库用户名
+define('DB_PASS', '您的密码');        // 数据库密码
+define('DB_CHARSET', 'utf8mb4');
+define('DB_PREFIX', '');
+?>
+
+3. 保存文件
+4. 访问后台测试
+
+方法二：使用 fix_config.php
+--------------------------
+1. 访问：http://您的域名/admin/fix_config.php
+2. 填写数据库信息
+3. 点击保存
+
+【重要提醒】
+------------
+1. 本次更新将数据库配置放在 admin/config.php
+2. 所有后台文件优先读取 admin/config.php
+3. 如果 config.php 不存在，才会尝试读取 backend/config/database.php
+
+【文件变更】
+------------
+新增：
+- admin/config.php              # 数据库配置（新增）
+- admin/fix_config.php          # 配置修复工具
+- admin/check_config.php        # 配置检测工具
+
+修改：
+- admin/settings.php            # 优先读取 config.php
+- admin/ai_settings.php         # 优先读取 config.php
+- admin/backup.php              # 优先读取 config.php
+- admin/users.php               # 优先读取 config.php
+- admin/init_tables.php         # 优先读取 config.php
+
+【打包文件】
+------------
+文件名：xiaoshuowang_app_latest.zip
+大小：96 KB
+
+========================================

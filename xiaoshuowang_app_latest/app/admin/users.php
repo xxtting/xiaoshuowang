@@ -347,76 +347,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             
         default:
             echo json_encode(['code' => 1, 'msg' => '未知操作']);
-            break;
-    }
-    exit;
-}
-
-// 处理导出请求 (GET请求)
-if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['action']) && $_GET['action'] === 'export') {
-    // 获取筛选条件
-    $search = trim($_GET['search'] ?? '');
-    $status = $_GET['status'] ?? '';
-    $userType = $_GET['userType'] ?? '';
-    
-    $where = '1=1';
-    $params = [];
-    
-    if ($search) {
-        $where .= " AND (username LIKE ? OR nickname LIKE ? OR email LIKE ? OR phone LIKE ?)";
-        $searchParam = "%$search%";
-        $params = array_merge($params, [$searchParam, $searchParam, $searchParam, $searchParam]);
-    }
-    
-    if ($status !== '') {
-        $where .= " AND status = ?";
-        $params[] = intval($status);
-    }
-    
-    if ($userType !== '') {
-        $where .= " AND user_type = ?";
-        $params[] = intval($userType);
-    }
-    
-    // 查询所有用户数据
-    $sql = "SELECT id, username, nickname, email, phone, user_type, vip_level, status, create_time, update_time 
-            FROM user WHERE $where ORDER BY create_time DESC";
-    
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute($params);
-    $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    
-    // 设置CSV响应头
-    header('Content-Type: text/csv; charset=utf-8');
-    header('Content-Disposition: attachment; filename="users_export_' . date('Y-m-d') . '.csv"');
-    
-    // 输出BOM头，解决中文乱码
-    echo "\xEF\xBB\xBF";
-    
-    // 输出CSV头部
-    $headers = ['ID', '用户名', '昵称', '邮箱', '手机号', '用户类型', 'VIP等级', '状态', '注册时间', '更新时间'];
-    echo implode(',', array_map(function($h) { return '"' . $h . '"'; }, $headers)) . "\n";
-    
-    // 输出数据行
-    foreach ($users as $user) {
-        $userTypeText = ['普通用户', '作者', '管理员'][$user['user_type']] ?? '未知';
-        $statusText = $user['status'] == 1 ? '正常' : '禁用';
-        
-        $row = [
-            $user['id'],
-            $user['username'],
-            $user['nickname'] ?? '',
-            $user['email'] ?? '',
-            $user['phone'] ?? '',
-            $userTypeText,
-            $user['vip_level'] > 0 ? 'VIP' . $user['vip_level'] : '普通',
-            $statusText,
-            $user['create_time'],
-            $user['update_time']
-        ];
-        
-        echo implode(',', array_map(function($v) { return '"' . str_replace('"', '""', $v) . '"'; }, $row)) . "\n";
-    }
     }
     
     exit;
@@ -1483,36 +1413,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['action']) && $_GET['act
         
         // 导出用户
         function exportUsers() {
-            // 获取当前筛选条件
-            const search = document.getElementById('searchInput').value;
-            const status = document.getElementById('statusFilter').value;
-            const userType = document.getElementById('userTypeFilter').value;
-            
-            // 构建导出参数
-            const params = new URLSearchParams();
-            params.append('action', 'export');
-            if (search) params.append('search', search);
-            if (status) params.append('status', status);
-            if (userType) params.append('userType', userType);
-            
-            // 发送导出请求
-            fetch('users.php?' + params.toString())
-                .then(response => response.blob())
-                .then(blob => {
-                    // 创建下载链接
-                    const url = window.URL.createObjectURL(blob);
-                    const a = document.createElement('a');
-                    a.href = url;
-                    a.download = 'users_export_' + new Date().toISOString().slice(0, 10) + '.csv';
-                    document.body.appendChild(a);
-                    a.click();
-                    document.body.removeChild(a);
-                    window.URL.revokeObjectURL(url);
-                })
-                .catch(error => {
-                    console.error('导出失败:', error);
-                    alert('导出失败，请稍后重试');
-                });
+            alert('导出功能开发中...');
         }
         
         // 返回后台

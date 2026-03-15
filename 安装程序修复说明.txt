@@ -1,0 +1,67 @@
+========================================
+    安装程序修复说明
+========================================
+
+【问题原因】
+安装程序在写入数据库配置时，只创建了返回数组的配置文件，
+没有定义 DB_HOST, DB_NAME 等常量，导致后台页面无法连接数据库。
+
+【修复内容】
+修改了 app/install/index.php 中的 setupDatabase 函数，
+现在安装程序会同时创建两个配置文件：
+
+1. backend/config/database.php
+   - 包含常量定义（DB_HOST, DB_NAME 等）
+   - 同时返回配置数组
+
+2. admin/config.php
+   - 包含常量定义
+   - 供后台管理页面使用
+
+【配置文件示例】
+安装完成后，database.php 内容如下：
+
+<?php
+/**
+ * 数据库配置文件
+ */
+
+// 定义数据库连接常量
+define('DB_HOST', 'localhost');
+define('DB_PORT', '3306');
+define('DB_NAME', 'xiaoshuowang');
+define('DB_USER', 'root');
+define('DB_PASS', '123456');
+define('DB_CHARSET', 'utf8mb4');
+define('DB_PREFIX', '');
+
+// 返回配置数组（兼容使用数组的代码）
+return [
+    'host' => DB_HOST,
+    'port' => DB_PORT,
+    'database' => DB_NAME,
+    'username' => DB_USER,
+    'password' => DB_PASS,
+    'charset' => DB_CHARSET,
+    'prefix' => DB_PREFIX,
+    'options' => [
+        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+        PDO::ATTR_EMULATE_PREPARES => false,
+    ],
+];
+
+【部署建议】
+
+1. 全新安装：
+   直接使用修复后的安装程序，配置会被正确写入
+
+2. 已安装的网站：
+   需要手动修改 backend/config/database.php，添加常量定义
+   或运行 admin/fix_config.php 重新生成配置
+
+【打包文件】
+文件名：xiaoshuowang_app_fixed.zip
+大小：96 KB
+
+========================================

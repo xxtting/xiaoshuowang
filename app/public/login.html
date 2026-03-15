@@ -345,12 +345,55 @@
         
         // 微信登录
         function wechatLogin() {
-            alert('微信登录功能开发中...');
+            // 获取微信登录配置
+            fetch('/api/config/wechat')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.code === 200 && data.data.enabled) {
+                        // 跳转到微信授权页面
+                        const redirectUri = encodeURIComponent(window.location.origin + '/api/auth/wechat/callback');
+                        const state = generateState();
+                        localStorage.setItem('oauth_state', state);
+                        
+                        const authUrl = `https://open.weixin.qq.com/connect/qrconnect?appid=${data.data.app_id}&redirect_uri=${redirectUri}&response_type=code&scope=snsapi_login&state=${state}#wechat_redirect`;
+                        window.location.href = authUrl;
+                    } else {
+                        alert('微信登录未启用，请联系管理员');
+                    }
+                })
+                .catch(error => {
+                    console.error('获取微信配置失败:', error);
+                    alert('微信登录暂不可用');
+                });
         }
         
         // QQ登录
         function qqLogin() {
-            alert('QQ登录功能开发中...');
+            // 获取QQ登录配置
+            fetch('/api/config/qq')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.code === 200 && data.data.enabled) {
+                        // 跳转到QQ授权页面
+                        const redirectUri = encodeURIComponent(window.location.origin + '/api/auth/qq/callback');
+                        const state = generateState();
+                        localStorage.setItem('oauth_state', state);
+                        
+                        const authUrl = `https://graph.qq.com/oauth2.0/authorize?response_type=code&client_id=${data.data.app_id}&redirect_uri=${redirectUri}&state=${state}&scope=get_user_info`;
+                        window.location.href = authUrl;
+                    } else {
+                        alert('QQ登录未启用，请联系管理员');
+                    }
+                })
+                .catch(error => {
+                    console.error('获取QQ配置失败:', error);
+                    alert('QQ登录暂不可用');
+                });
+        }
+        
+        // 生成随机state防止CSRF攻击
+        function generateState() {
+            return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
         }
     </script>
 </body>
