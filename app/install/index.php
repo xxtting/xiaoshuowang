@@ -3,8 +3,6 @@
  * 小说网系统安装程序
  */
 
-session_start();
-
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
@@ -45,27 +43,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         case 3:
             // 管理员配置
             $admin = $_POST;
-            
-            // 验证密码
-            if ($admin['admin_password'] !== $admin['confirm_password']) {
-                die("<script>alert('两次输入的密码不一致！');history.back();</script>");
-            }
-            
-            // 验证账号
-            if (empty($admin['admin_username'])) {
-                $admin['admin_username'] = 'admin';
-            }
-            
             $result = setupAdmin($admin);
             if ($result['success']) {
-                // 保存管理员账号到session
-                $_SESSION['admin_username'] = $admin['admin_username'];
                 // 创建安装锁文件
                 file_put_contents(INSTALL_LOCK_FILE, '安装完成时间: ' . date('Y-m-d H:i:s'));
                 header('Location: ?step=4');
                 exit;
-            } else {
-                die("<script>alert('安装失败：" . addslashes($result['message']) . "');history.back();</script>");
             }
             break;
     }
@@ -140,17 +123,11 @@ function setupAdmin($admin) {
         $dsn = "mysql:host={$dbConfig['host']};port={$dbConfig['port']};dbname={$dbConfig['database']};charset=utf8mb4";
         $pdo = new PDO($dsn, $dbConfig['username'], $dbConfig['password']);
         
-        // 更新管理员账号
+        // 更新管理员密码
         $passwordHash = password_hash($admin['admin_password'], PASSWORD_DEFAULT);
-        $adminUsername = $admin['admin_username'] ?? 'admin';
         
-        // 先删除默认的admin账号（如果存在）
-        $stmt = $pdo->prepare("DELETE FROM admin_user WHERE username = 'admin'");
-        $stmt->execute();
-        
-        // 插入新的管理员账号
-        $stmt = $pdo->prepare("INSERT INTO admin_user (username, password, realname, status, create_time) VALUES (?, ?, ?, 1, NOW())");
-        $stmt->execute([$adminUsername, $passwordHash, $admin['admin_name']]);
+        $stmt = $pdo->prepare("UPDATE admin_user SET password = ?, realname = ? WHERE username = 'admin'");
+        $stmt->execute([$passwordHash, $admin['admin_name']]);
         
         // 更新网站配置
         $stmt = $pdo->prepare("UPDATE sys_config SET config_value = ? WHERE config_key = 'site_name'");
@@ -281,12 +258,8 @@ function setupAdmin($admin) {
                         <input type="text" name="site_name" value="AI小说网" required>
                     </div>
                     <div class="form-group">
-                        <label>管理员账号</label>
-                        <input type="text" name="admin_username" value="admin" required placeholder="请输入管理员登录账号">
-                    </div>
-                    <div class="form-group">
                         <label>管理员姓名</label>
-                        <input type="text" name="admin_name" value="系统管理员" required placeholder="请输入管理员显示名称">
+                        <input type="text" name="admin_name" value="系统管理员" required>
                     </div>
                     <div class="form-group">
                         <label>管理员密码</label>
@@ -307,12 +280,11 @@ function setupAdmin($admin) {
                 <div class="success-message">
                     <h2>安装完成！</h2>
                     <p>小说网系统已成功安装。</p>
-                    <p><strong>管理员账号：</strong> <?php echo htmlspecialchars($_SESSION['admin_username'] ?? 'admin'); ?></p>
+                    <p><strong>管理员账号：</strong> admin</p>
                     <p><strong>后台地址：</strong> <a href="../admin/">/admin/</a></p>
                     <p><strong>前端地址：</strong> <a href="../">/</a></p>
                     <p style="margin-top: 30px;">
-                        <a href="../admin/" class="btn">进入后台</a>
-                        <a href="../" class="btn" style="background: #666;">访问网站</a>
+                        <a href="../" class="btn">访问网站</a>
                     </p>
                 </div>
             <?php endif; ?>
