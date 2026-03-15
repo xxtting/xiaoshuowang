@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI创作 - AI小说网</title>
+    <meta name="description" content="使用AI智能创作小说，让创作变得简单有趣">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Microsoft YaHei', 'PingFang SC', sans-serif; background: #f5f7fa; color: #333; line-height: 1.6; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+        
+        /* 头部导航 */
+        .header { background: white; box-shadow: 0 2px 10px rgba(0,0,0,0.1); position: fixed; width: 100%; top: 0; z-index: 1000; }
+        .header-content { display: flex; align-items: center; justify-content: space-between; padding: 15px 0; }
+        .logo { display: flex; align-items: center; text-decoration: none; color: #333; }
+        .logo-icon { font-size: 28px; margin-right: 10px; color: #667eea; }
+        .logo-text { font-size: 24px; font-weight: bold; }
+        .logo-text span { color: #667eea; }
+        .nav-menu { display: flex; list-style: none; gap: 30px; }
+        .nav-menu a { text-decoration: none; color: #555; font-weight: 500; padding: 8px 0; position: relative; transition: color 0.3s; }
+        .nav-menu a:hover, .nav-menu a.active { color: #667eea; }
+        .user-actions { display: flex; align-items: center; gap: 15px; }
+        .btn { padding: 10px 25px; border-radius: 25px; text-decoration: none; font-weight: bold; transition: all 0.3s; cursor: pointer; border: none; }
+        .btn-login { background: transparent; color: #667eea; border: 2px solid #667eea; }
+        .btn-login:hover { background: #667eea; color: white; }
+        .btn-primary { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3); }
+        
+        /* 主要内容 */
+        .main-content { padding-top: 100px; padding-bottom: 60px; }
+        .page-header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 50px; border-radius: 15px; margin-bottom: 30px; text-align: center; }
+        .page-title { font-size: 36px; margin-bottom: 15px; }
+        .page-subtitle { font-size: 16px; opacity: 0.9; }
+        
+        /* 创作区域 */
+        .create-section { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
+        .input-panel, .output-panel { background: white; border-radius: 15px; padding: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); }
+        .panel-title { font-size: 20px; font-weight: bold; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
+        .form-group { margin-bottom: 20px; }
+        .form-label { display: block; margin-bottom: 8px; font-weight: 500; color: #555; }
+        .form-input, .form-select, .form-textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 15px;
+            transition: all 0.3s;
+            outline: none;
+            font-family: inherit;
+        }
+        .form-input:focus, .form-select:focus, .form-textarea:focus { border-color: #667eea; }
+        .form-textarea { resize: vertical; min-height: 120px; }
+        .form-hint { font-size: 13px; color: #888; margin-top: 5px; }
+        
+        /* 标签选择 */
+        .tag-options { display: flex; flex-wrap: wrap; gap: 10px; }
+        .tag-option {
+            padding: 8px 16px;
+            border-radius: 20px;
+            background: #f5f7fa;
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 14px;
+        }
+        .tag-option:hover { border-color: #667eea; color: #667eea; }
+        .tag-option.active { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
+        
+        /* 生成按钮 */
+        .generate-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .generate-btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4); }
+        .generate-btn:disabled { opacity: 0.7; cursor: not-allowed; }
+        
+        /* 输出区域 */
+        .output-content {
+            min-height: 400px;
+            background: #f8fafc;
+            border-radius: 10px;
+            padding: 20px;
+            line-height: 1.8;
+            white-space: pre-wrap;
+            overflow-y: auto;
+            max-height: 500px;
+        }
+        .output-placeholder {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 400px;
+            color: #888;
+            text-align: center;
+        }
+        .output-placeholder i { font-size: 64px; margin-bottom: 20px; color: #cbd5e0; }
+        
+        /* 加载动画 */
+        .generating {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 400px;
+        }
+        .generating i { font-size: 48px; animation: spin 1s linear infinite; color: #667eea; margin-bottom: 20px; }
+        .generating p { color: #666; }
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        
+        /* 输出操作 */
+        .output-actions { display: flex; gap: 10px; margin-top: 15px; }
+        .output-actions .btn { flex: 1; padding: 12px; font-size: 14px; }
+        .btn-secondary { background: #e2e8f0; color: #555; }
+        .btn-secondary:hover { background: #cbd5e0; }
+        
+        /* 历史记录 */
+        .history-section { margin-top: 40px; }
+        .section-title { font-size: 24px; font-weight: bold; margin-bottom: 20px; }
+        .history-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
+        .history-item {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .history-item:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(0,0,0,0.12); }
+        .history-title { font-weight: bold; margin-bottom: 10px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .history-meta { display: flex; justify-content: space-between; font-size: 13px; color: #888; }
+        
+        /* 页脚 */
+        .footer { background: #2d3748; color: white; padding: 40px 0; margin-top: 60px; }
+        .footer-content { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 40px; }
+        .footer-section h3 { font-size: 18px; margin-bottom: 20px; }
+        .footer-links { list-style: none; }
+        .footer-links li { margin-bottom: 10px; }
+        .footer-links a { color: #cbd5e0; text-decoration: none; transition: color 0.3s; }
+        .footer-links a:hover { color: #667eea; }
+        .copyright { text-align: center; padding-top: 30px; margin-top: 30px; border-top: 1px solid #4a5568; color: #a0aec0; font-size: 14px; }
+        
+        /* 响应式 */
+        @media (max-width: 768px) {
+            .nav-menu { display: none; }
+            .create-section { grid-template-columns: 1fr; }
+            .page-header { padding: 30px 20px; }
+            .page-title { font-size: 28px; }
+        }
+    </style>
+</head>
+<body>
+    <!-- 头部导航 -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <a href="/" class="logo">
+                    <div class="logo-icon">📚</div>
+                    <div class="logo-text">AI<span>小说</span>网</div>
+                </a>
+                <nav>
+                    <ul class="nav-menu">
+                        <li><a href="/">首页</a></li>
+                        <li><a href="/novels.html">小说库</a></li>
+                        <li><a href="/categories.html">分类</a></li>
+                        <li><a href="/ranking.html">排行榜</a></li>
+                        <li><a href="/ai-create.html" class="active">AI创作</a></li>
+                    </ul>
+                </nav>
+                <div class="user-actions">
+                    <a href="/login.html" class="btn btn-login">登录</a>
+                    <a href="/register.html" class="btn btn-primary">注册</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- 主要内容 -->
+    <main class="main-content">
+        <div class="container">
+            <!-- 页面标题 -->
+            <div class="page-header">
+                <h1 class="page-title">🤖 AI智能创作</h1>
+                <p class="page-subtitle">输入您的创意提示，让AI为您生成精彩小说内容</p>
+            </div>
+            
+            <!-- 创作区域 -->
+            <div class="create-section">
+                <!-- 输入面板 -->
+                <div class="input-panel">
+                    <h2 class="panel-title"><i class="fas fa-pen-fancy"></i> 创作设置</h2>
+                    
+                    <div class="form-group">
+                        <label class="form-label">小说类型</label>
+                        <div class="tag-options" id="typeOptions">
+                            <span class="tag-option active" data-value="xuanhuan">玄幻</span>
+                            <span class="tag-option" data-value="dushi">都市</span>
+                            <span class="tag-option" data-value="yanqing">言情</span>
+                            <span class="tag-option" data-value="kehuan">科幻</span>
+                            <span class="tag-option" data-value="xuanyi">悬疑</span>
+                            <span class="tag-option" data-value="lishi">历史</span>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">创意提示</label>
+                        <textarea class="form-textarea" id="promptInput" placeholder="请输入您的创意提示，例如：一个普通少年意外获得神秘力量，开始了一段传奇之旅..."></textarea>
+                        <div class="form-hint">描述越详细，生成的内容越符合您的期望</div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">生成字数</label>
+                        <select class="form-select" id="wordCount">
+                            <option value="500">约500字</option>
+                            <option value="1000" selected>约1000字</option>
+                            <option value="2000">约2000字</option>
+                            <option value="3000">约3000字</option>
+                        </select>
+                    </div>
+                    
+                    <button class="generate-btn" id="generateBtn" onclick="generateNovel()">
+                        <i class="fas fa-magic"></i> 开始创作
+                    </button>
+                </div>
+                
+                <!-- 输出面板 -->
+                <div class="output-panel">
+                    <h2 class="panel-title"><i class="fas fa-file-alt"></i> 生成结果</h2>
+                    <div class="output-content" id="outputContent">
+                        <div class="output-placeholder">
+                            <i class="fas fa-robot"></i>
+                            <p>AI创作的内容将显示在这里</p>
+                            <p style="font-size: 14px; margin-top: 10px;">在左侧输入创意提示，点击"开始创作"按钮</p>
+                        </div>
+                    </div>
+                    <div class="output-actions" id="outputActions" style="display: none;">
+                        <button class="btn btn-secondary" onclick="copyContent()">
+                            <i class="fas fa-copy"></i> 复制
+                        </button>
+                        <button class="btn btn-primary" onclick="saveContent()">
+                            <i class="fas fa-save"></i> 保存
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 历史记录 -->
+            <div class="history-section">
+                <h2 class="section-title">📜 创作历史</h2>
+                <div class="history-list" id="historyList">
+                    <div class="history-item">
+                        <div class="history-title">玄幻：剑仙传奇</div>
+                        <div class="history-meta">
+                            <span>2025-03-14</span>
+                            <span>约1000字</span>
+                        </div>
+                    </div>
+                    <div class="history-item">
+                        <div class="history-title">都市：神医归来</div>
+                        <div class="history-meta">
+                            <span>2025-03-13</span>
+                            <span>约2000字</span>
+                        </div>
+                    </div>
+                    <div class="history-item">
+                        <div class="history-title">科幻：星际探索</div>
+                        <div class="history-meta">
+                            <span>2025-03-12</span>
+                            <span>约1500字</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- 页脚 -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>关于我们</h3>
+                    <p>AI小说网致力于打造最智能的小说创作与阅读平台。</p>
+                </div>
+                <div class="footer-section">
+                    <h3>快速链接</h3>
+                    <ul class="footer-links">
+                        <li><a href="/">首页</a></li>
+                        <li><a href="/novels.html">小说库</a></li>
+                        <li><a href="/categories.html">分类浏览</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>帮助中心</h3>
+                    <ul class="footer-links">
+                        <li><a href="/help.html">使用帮助</a></li>
+                        <li><a href="/faq.html">常见问题</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>联系我们</h3>
+                    <p>📧 邮箱：xxtting@qq.com</p>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>© 2025 AI小说网 版权所有</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // 当前选中的类型
+        let selectedType = 'xuanhuan';
+        
+        // 页面加载完成后执行
+        document.addEventListener('DOMContentLoaded', function() {
+            // 类型选择
+            document.querySelectorAll('#typeOptions .tag-option').forEach(option => {
+                option.addEventListener('click', function() {
+                    document.querySelectorAll('#typeOptions .tag-option').forEach(o => o.classList.remove('active'));
+                    this.classList.add('active');
+                    selectedType = this.dataset.value;
+                });
+            });
+        });
+        
+        // 生成小说
+        async function generateNovel() {
+            const prompt = document.getElementById('promptInput').value.trim();
+            const wordCount = document.getElementById('wordCount').value;
+            const btn = document.getElementById('generateBtn');
+            const output = document.getElementById('outputContent');
+            
+            if (!prompt) {
+                alert('请输入创意提示');
+                return;
+            }
+            
+            // 禁用按钮并显示加载
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 创作中...';
+            output.innerHTML = `
+                <div class="generating">
+                    <i class="fas fa-magic"></i>
+                    <p>AI正在创作中，请稍候...</p>
+                </div>
+            `;
+            
+            try {
+                // 模拟API调用
+                // const response = await fetch('/api/ai/generate', {
+                //     method: 'POST',
+                //     headers: { 'Content-Type': 'application/json' },
+                //     body: JSON.stringify({ prompt, type: selectedType, word_count: wordCount })
+                // });
+                // const data = await response.json();
+                
+                // 模拟延迟
+                await new Promise(resolve => setTimeout(resolve, 2000));
+                
+                // 模拟生成结果
+                const generatedContent = generateMockContent(prompt, selectedType);
+                
+                output.innerHTML = `<div style="white-space: pre-wrap;">${generatedContent}</div>`;
+                document.getElementById('outputActions').style.display = 'flex';
+                
+            } catch (error) {
+                console.error('生成失败:', error);
+                output.innerHTML = '<div style="text-align:center;padding:40px;color:#c53030;">生成失败，请稍后重试</div>';
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-magic"></i> 开始创作';
+            }
+        }
+        
+        // 复制内容
+        function copyContent() {
+            const content = document.getElementById('outputContent').innerText;
+            navigator.clipboard.writeText(content).then(() => {
+                alert('内容已复制到剪贴板');
+            }).catch(() => {
+                alert('复制失败，请手动复制');
+            });
+        }
+        
+        // 保存内容
+        function saveContent() {
+            alert('请先登录后再保存内容');
+        }
+        
+        // 模拟生成内容
+        function generateMockContent(prompt, type) {
+            const typeNames = {
+                xuanhuan: '玄幻',
+                dushi: '都市',
+                yanqing: '言情',
+                kehuan: '科幻',
+                xuanyi: '悬疑',
+                lishi: '历史'
+            };
+            
+            return `【${typeNames[type]}】${prompt}
+
+第一章 命运的转折
+
+夕阳西下，天边染上了一层绚丽的晚霞。
+
+少年站在山顶，望着远方连绵起伏的山脉，心中充满了对未来的憧憬和迷茫。
+
+"我真的能做到吗？"他轻声自问。
+
+就在这时，一道奇异的光芒从天而降，将他整个人笼罩其中。少年只觉得浑身一震，一股前所未有的力量在体内涌动。
+
+"这是...什么力量？"
+
+光芒散去，少年发现自己手中多了一枚古朴的玉佩。玉佩上刻着神秘的符文，散发着淡淡的光芒。
+
+"难道这就是传说中的机缘？"
+
+少年握紧玉佩，眼中闪过一丝坚定。无论前方有多少艰难险阻，他都要勇往直前，追寻属于自己的道路。
+
+夜幕降临，繁星点点。
+
+少年踏上了新的征程，而他的传奇故事，才刚刚开始...
+
+（AI生成的内容，仅供参考）`;
+        }
+    </script>
+</body>
+</html>
