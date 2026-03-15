@@ -97,10 +97,7 @@ if (!$dbError) {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        :root {
-            --primary-color: #667eea;
-            --secondary-color: #764ba2;
-        }
+        :root { --primary-color: #667eea; --secondary-color: #764ba2; }
         body {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
@@ -114,88 +111,33 @@ if (!$dbError) {
             margin: 30px auto;
             max-width: 1400px;
         }
-        .page-title {
-            color: #333;
-            font-weight: 700;
-            margin-bottom: 30px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
+        .page-title { color: #333; font-weight: 700; margin-bottom: 30px; display: flex; align-items: center; gap: 10px; }
         .stat-card {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border-radius: 15px;
-            padding: 25px;
-            color: white;
-            margin-bottom: 20px;
-            transition: transform 0.3s;
+            border-radius: 15px; padding: 25px; color: white; margin-bottom: 20px; transition: transform 0.3s;
         }
-        .stat-card:hover {
-            transform: translateY(-5px);
-        }
-        .stat-card.secondary {
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-        }
-        .stat-card.success {
-            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-        }
-        .stat-card.warning {
-            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
-        }
-        .stat-number {
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin-bottom: 5px;
-        }
-        .stat-label {
-            font-size: 0.9rem;
-            opacity: 0.9;
-        }
-        .stat-trend {
-            font-size: 0.85rem;
-            margin-top: 10px;
-            opacity: 0.9;
-        }
-        .chart-container {
-            background: white;
-            border-radius: 15px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
+        .stat-card:hover { transform: translateY(-5px); }
+        .stat-card.secondary { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
+        .stat-card.success { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); }
+        .stat-card.warning { background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); }
+        .stat-number { font-size: 2.5rem; font-weight: 700; margin-bottom: 5px; }
+        .stat-label { font-size: 0.9rem; opacity: 0.9; }
+        .stat-trend { font-size: 0.85rem; margin-top: 10px; opacity: 0.9; }
+        .chart-container { background: white; border-radius: 15px; padding: 20px; margin-bottom: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
         .back-btn {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 25px;
-            transition: all 0.3s;
+            color: white; border: none; padding: 10px 20px; border-radius: 25px; transition: all 0.3s;
         }
-        .back-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
-            color: white;
-        }
-        .error-alert {
-            background: #f8d7da;
-            color: #721c24;
-            padding: 15px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-        }
+        .back-btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4); color: white; }
+        .error-alert { background: #f8d7da; color: #721c24; padding: 15px; border-radius: 10px; margin-bottom: 20px; }
     </style>
 </head>
 <body>
     <div class="container-fluid">
         <div class="main-container">
             <div class="d-flex justify-content-between align-items-center mb-4">
-                <h1 class="page-title">
-                    <i class="fas fa-chart-line"></i>
-                    数据统计
-                </h1>
-                <a href="dashboard.html" class="back-btn">
-                    <i class="fas fa-arrow-left"></i> 返回仪表板
-                </a>
+                <h1 class="page-title"><i class="fas fa-chart-line"></i> 数据统计</h1>
+                <a href="dashboard.html" class="back-btn"><i class="fas fa-arrow-left"></i> 返回仪表板</a>
             </div>
 
             <?php if ($dbError): ?>
@@ -206,26 +148,19 @@ if (!$dbError) {
             </div>
             <?php endif; ?>
 
-            <!-- 核心数据卡片 -->
             <div class="row">
                 <div class="col-md-3">
                     <div class="stat-card">
                         <div class="stat-number"><?php echo number_format($stats['users']['total']); ?></div>
                         <div class="stat-label"><i class="fas fa-users"></i> 总用户数</div>
-                        <div class="stat-trend">
-                            <i class="fas fa-arrow-up"></i> 今日 +<?php echo $stats['users']['today']; ?> | 
-                            本月 +<?php echo $stats['users']['month']; ?>
-                        </div>
+                        <div class="stat-trend"><i class="fas fa-arrow-up"></i> 今日 +<?php echo $stats['users']['today']; ?> | 本月 +<?php echo $stats['users']['month']; ?></div>
                     </div>
                 </div>
                 <div class="col-md-3">
                     <div class="stat-card secondary">
                         <div class="stat-number"><?php echo number_format($stats['novels']['total']); ?></div>
                         <div class="stat-label"><i class="fas fa-book"></i> 小说总数</div>
-                        <div class="stat-trend">
-                            <i class="fas fa-arrow-up"></i> 今日 +<?php echo $stats['novels']['today']; ?> | 
-                            本月 +<?php echo $stats['novels']['month']; ?>
-                        </div>
+                        <div class="stat-trend"><i class="fas fa-arrow-up"></i> 今日 +<?php echo $stats['novels']['today']; ?> | 本月 +<?php echo $stats['novels']['month']; ?></div>
                     </div>
                 </div>
                 <div class="col-md-3">
@@ -244,7 +179,6 @@ if (!$dbError) {
                 </div>
             </div>
 
-            <!-- 图表区域 -->
             <div class="row mt-4">
                 <div class="col-md-8">
                     <div class="chart-container">
@@ -272,45 +206,13 @@ if (!$dbError) {
                         <h5 class="mb-3"><i class="fas fa-fire"></i> 热门小说排行</h5>
                         <div class="table-responsive">
                             <table class="table table-hover">
-                                <thead>
-                                    <tr>
-                                        <th>排名</th>
-                                        <th>小说名称</th>
-                                        <th>作者</th>
-                                        <th>阅读量</th>
-                                    </tr>
-                                </thead>
+                                <thead><tr><th>排名</th><th>小说名称</th><th>作者</th><th>阅读量</th></tr></thead>
                                 <tbody>
-                                    <tr>
-                                        <td><span class="badge bg-danger">1</span></td>
-                                        <td>斗破苍穹</td>
-                                        <td>天蚕土豆</td>
-                                        <td>1,234,567</td>
-                                    </tr>
-                                    <tr>
-                                        <td><span class="badge bg-warning">2</span></td>
-                                        <td>完美世界</td>
-                                        <td>辰东</td>
-                                        <td>987,654</td>
-                                    </tr>
-                                    <tr>
-                                        <td><span class="badge bg-info">3</span></td>
-                                        <td>遮天</td>
-                                        <td>辰东</td>
-                                        <td>876,543</td>
-                                    </tr>
-                                    <tr>
-                                        <td><span class="badge bg-secondary">4</span></td>
-                                        <td>凡人修仙传</td>
-                                        <td>忘语</td>
-                                        <td>765,432</td>
-                                    </tr>
-                                    <tr>
-                                        <td><span class="badge bg-secondary">5</span></td>
-                                        <td>仙逆</td>
-                                        <td>耳根</td>
-                                        <td>654,321</td>
-                                    </tr>
+                                    <tr><td><span class="badge bg-danger">1</span></td><td>斗破苍穹</td><td>天蚕土豆</td><td>1,234,567</td></tr>
+                                    <tr><td><span class="badge bg-warning">2</span></td><td>完美世界</td><td>辰东</td><td>987,654</td></tr>
+                                    <tr><td><span class="badge bg-info">3</span></td><td>遮天</td><td>辰东</td><td>876,543</td></tr>
+                                    <tr><td><span class="badge bg-secondary">4</span></td><td>凡人修仙传</td><td>忘语</td><td>765,432</td></tr>
+                                    <tr><td><span class="badge bg-secondary">5</span></td><td>仙逆</td><td>耳根</td><td>654,321</td></tr>
                                 </tbody>
                             </table>
                         </div>
@@ -322,96 +224,31 @@ if (!$dbError) {
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // 用户增长趋势图
-        const userGrowthCtx = document.getElementById('userGrowthChart').getContext('2d');
-        new Chart(userGrowthCtx, {
+        new Chart(document.getElementById('userGrowthChart'), {
             type: 'line',
             data: {
-                labels: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'],
+                labels: ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'],
                 datasets: [{
-                    label: '新增用户',
-                    data: [120, 190, 300, 500, 200, 300, 450, 400, 520, 600, 750, 800],
-                    borderColor: '#667eea',
-                    backgroundColor: 'rgba(102, 126, 234, 0.1)',
-                    tension: 0.4,
-                    fill: true
-                }, {
-                    label: '活跃用户',
-                    data: [80, 150, 250, 400, 180, 280, 400, 350, 480, 550, 680, 720],
-                    borderColor: '#764ba2',
-                    backgroundColor: 'rgba(118, 75, 162, 0.1)',
-                    tension: 0.4,
-                    fill: true
+                    label: '新增用户', data: [120,190,300,500,200,300,450,400,520,600,750,800],
+                    borderColor: '#667eea', backgroundColor: 'rgba(102,126,234,0.1)', tension: 0.4, fill: true
+                },{
+                    label: '活跃用户', data: [80,150,250,400,180,280,400,350,480,550,680,720],
+                    borderColor: '#764ba2', backgroundColor: 'rgba(118,75,162,0.1)', tension: 0.4, fill: true
                 }]
             },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: {
-                        position: 'top',
-                    }
-                },
-                scales: {
-                    y: {
-                        beginAtZero: true
-                    }
-                }
-            }
+            options: { responsive: true, plugins: { legend: { position: 'top' } }, scales: { y: { beginAtZero: true } } }
         });
 
-        // 用户分布饼图
-        const userDistCtx = document.getElementById('userDistChart').getContext('2d');
-        new Chart(userDistCtx, {
+        new Chart(document.getElementById('userDistChart'), {
             type: 'doughnut',
-            data: {
-                labels: ['普通用户', 'VIP用户', '作者', '管理员'],
-                datasets: [{
-                    data: [65, 20, 12, 3],
-                    backgroundColor: ['#667eea', '#f093fb', '#4facfe', '#43e97b']
-                }]
-            },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: {
-                        position: 'bottom'
-                    }
-                }
-            }
+            data: { labels: ['普通用户','VIP用户','作者','管理员'], datasets: [{ data: [65,20,12,3], backgroundColor: ['#667eea','#f093fb','#4facfe','#43e97b'] }] },
+            options: { responsive: true, plugins: { legend: { position: 'bottom' } } }
         });
 
-        // 分类统计柱状图
-        const categoryCtx = document.getElementById('categoryChart').getContext('2d');
-        new Chart(categoryCtx, {
+        new Chart(document.getElementById('categoryChart'), {
             type: 'bar',
-            data: {
-                labels: ['玄幻', '都市', '言情', '科幻', '历史', '悬疑'],
-                datasets: [{
-                    label: '小说数量',
-                    data: [450, 320, 280, 150, 120, 90],
-                    backgroundColor: [
-                        'rgba(102, 126, 234, 0.8)',
-                        'rgba(118, 75, 162, 0.8)',
-                        'rgba(240, 147, 251, 0.8)',
-                        'rgba(79, 172, 254, 0.8)',
-                        'rgba(67, 233, 123, 0.8)',
-                        'rgba(255, 154, 158, 0.8)'
-                    ]
-                }]
-            },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: {
-                        display: false
-                    }
-                },
-                scales: {
-                    y: {
-                        beginAtZero: true
-                    }
-                }
-            }
+            data: { labels: ['玄幻','都市','言情','科幻','历史','悬疑'], datasets: [{ label: '小说数量', data: [450,320,280,150,120,90], backgroundColor: ['rgba(102,126,234,0.8)','rgba(118,75,162,0.8)','rgba(240,147,251,0.8)','rgba(79,172,254,0.8)','rgba(67,233,123,0.8)','rgba(255,154,158,0.8)'] }] },
+            options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
         });
     </script>
 </body>
