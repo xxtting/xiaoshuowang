@@ -1,12 +1,10 @@
 <?php
 /**
  * 数据统计页面
- * 展示网站各项数据统计信息
  */
 
 session_start();
 
-// 检查管理员登录
 if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== true) {
     header('Location: login.html');
     exit;

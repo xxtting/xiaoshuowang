@@ -230,8 +230,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             
         case 'upload_image':
             // 上传图片
-            if (!isset($_FILES['image']) || $_FILES['image']['error'] !== UPLOAD_ERR_OK) {
-                echo json_encode(['code' => 1, 'msg' => '请选择要上传的图片']);
+            if (!isset($_FILES['image'])) {
+                echo json_encode(['code' => 1, 'msg' => '没有接收到文件']);
+                break;
+            }
+            
+            if ($_FILES['image']['error'] !== UPLOAD_ERR_OK) {
+                $errorMsg = '上传错误: ';
+                switch ($_FILES['image']['error']) {
+                    case UPLOAD_ERR_INI_SIZE: $errorMsg .= '文件大小超过服务器限制'; break;
+                    case UPLOAD_ERR_FORM_SIZE: $errorMsg .= '文件大小超过表单限制'; break;
+                    case UPLOAD_ERR_PARTIAL: $errorMsg .= '文件上传不完整'; break;
+                    case UPLOAD_ERR_NO_FILE: $errorMsg .= '没有选择文件'; break;
+                    case UPLOAD_ERR_NO_TMP_DIR: $errorMsg .= '服务器临时目录不存在'; break;
+                    case UPLOAD_ERR_CANT_WRITE: $errorMsg .= '文件写入失败'; break;
+                    default: $errorMsg .= '错误代码 ' . $_FILES['image']['error'];
+                }
+                echo json_encode(['code' => 1, 'msg' => $errorMsg]);
                 break;
             }
             
@@ -239,7 +254,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
             
             if (!in_array($file['type'], $allowedTypes)) {
-                echo json_encode(['code' => 1, 'msg' => '只支持JPG、PNG、GIF、WEBP格式']);
+                echo json_encode(['code' => 1, 'msg' => '只支持JPG、PNG、GIF、WEBP格式，当前类型: ' . $file['type']]);
                 break;
             }
             
@@ -250,7 +265,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             
             $uploadDir = __DIR__ . '/../public/uploads/settings/';
             if (!is_dir($uploadDir)) {
-                mkdir($uploadDir, 0755, true);
+                if (!mkdir($uploadDir, 0755, true)) {
+                    echo json_encode(['code' => 1, 'msg' => '创建上传目录失败: ' . $uploadDir]);
+                    break;
+                }
+            }
+            
+            if (!is_writable($uploadDir)) {
+                echo json_encode(['code' => 1, 'msg' => '上传目录没有写入权限: ' . $uploadDir]);
+                break;
             }
             
             $ext = pathinfo($file['name'], PATHINFO_EXTENSION);
@@ -261,7 +284,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $url = '/public/uploads/settings/' . $filename;
                 echo json_encode(['code' => 0, 'msg' => '上传成功', 'data' => ['url' => $url]]);
             } else {
-                echo json_encode(['code' => 1, 'msg' => '上传失败']);
+                echo json_encode(['code' => 1, 'msg' => '文件保存失败，请检查目录权限']);
             }
             break;
             

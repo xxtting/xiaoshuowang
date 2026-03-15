@@ -1,12 +1,10 @@
 <?php
 /**
  * 操作日志页面
- * 展示系统操作日志记录
  */
 
 session_start();
 
-// 检查管理员登录
 if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== true) {
     header('Location: login.html');
     exit;
