@@ -12,21 +12,8 @@ if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== tru
     exit;
 }
 
-// 引入数据库配置
-if (file_exists(__DIR__ . '/config.php')) {
-    require_once __DIR__ . '/config.php';
-} elseif (file_exists(__DIR__ . '/../backend/config/database.php')) {
-    require_once __DIR__ . '/../backend/config/database.php';
-} else {
-    die("错误：数据库配置文件不存在。");
-}
-
-// 检查常量是否定义
-if (!defined('DB_HOST') || !defined('DB_NAME') || !defined('DB_USER') || !defined('DB_PASS')) {
-    die("错误：数据库配置不完整，请检查 config.php 文件。");
-}
-
-// 数据库连接
+// 引入数据库配置 - 优先使用安装程序创建的配置
+$dbConfig = null;
 $dbError = null;
 $logs = [];
 $totalLogs = 0;
@@ -34,13 +21,26 @@ $page = isset($_GET['page']) ? intval($_GET['page']) : 1;
 $pageSize = 20;
 $offset = ($page - 1) * $pageSize;
 
+if (file_exists(__DIR__ . '/../backend/config/database.php')) {
+    $dbConfig = require __DIR__ . '/../backend/config/database.php';
+} elseif (file_exists(__DIR__ . '/config.php')) {
+    require_once __DIR__ . '/config.php';
+    $dbConfig = [
+        'host' => DB_HOST, 'port' => DB_PORT, 'database' => DB_NAME,
+        'username' => DB_USER, 'password' => DB_PASS, 'charset' => DB_CHARSET
+    ];
+}
+
+if (!$dbConfig) {
+    die("错误：数据库配置文件不存在。请先运行安装程序 /install/");
+}
+
+// 数据库连接
 try {
-    $pdo = new PDO(
-        "mysql:host=" . DB_HOST . ";dbname=" . DB_NAME . ";charset=utf8mb4",
-        DB_USER,
-        DB_PASS,
-        [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]
-    );
+    $dsn = "mysql:host={$dbConfig['host']};port={$dbConfig['port']};dbname={$dbConfig['database']};charset={$dbConfig['charset']}";
+    $pdo = new PDO($dsn, $dbConfig['username'], $dbConfig['password'], [
+        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
+    ]);
     
     $actionType = $_GET['action_type'] ?? '';
     $search = $_GET['search'] ?? '';
