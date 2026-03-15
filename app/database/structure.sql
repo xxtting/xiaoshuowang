@@ -207,28 +207,15 @@ CREATE TABLE `user_read_history` (
 CREATE TABLE `sys_log` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `user_id` int(11) DEFAULT NULL COMMENT '用户ID',
-  `username` varchar(50) DEFAULT NULL COMMENT '操作用户名',
   `action` varchar(100) NOT NULL COMMENT '操作类型',
-  `action_type` varchar(50) DEFAULT 'other' COMMENT '操作分类：login/content/system/error/other',
   `description` varchar(500) DEFAULT NULL COMMENT '操作描述',
   `ip` varchar(50) DEFAULT NULL COMMENT 'IP地址',
   `user_agent` text COMMENT '用户代理',
-  `target_type` varchar(50) DEFAULT NULL COMMENT '操作对象类型',
-  `target_id` int(11) DEFAULT NULL COMMENT '操作对象ID',
-  `before_data` json DEFAULT NULL COMMENT '操作前数据',
-  `after_data` json DEFAULT NULL COMMENT '操作后数据',
-  `result` tinyint(1) DEFAULT 1 COMMENT '操作结果：1成功 0失败',
   `create_time` datetime DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `idx_user_id` (`user_id`),
-  KEY `idx_username` (`username`),
   KEY `idx_action` (`action`),
-  KEY `idx_action_type` (`action_type`),
-  KEY `idx_target` (`target_type`, `target_id`),
-  KEY `idx_result` (`result`),
-  KEY `idx_created_at` (`create_time`),
-  KEY `idx_user_time` (`user_id`, `create_time`),
-  KEY `idx_action_time` (`action_type`, `create_time`)
+  KEY `idx_created_at` (`create_time`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='系统操作日志表';
 
 -- ============================================

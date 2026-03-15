@@ -97,52 +97,16 @@ function setupDatabase($config) {
         }
         
         // 创建数据库配置文件
-        $configContent = "<?php\n";
-        $configContent .= "/**\n";
-        $configContent .= " * 数据库配置文件\n";
-        $configContent .= " * 生成时间: " . date('Y-m-d H:i:s') . "\n";
-        $configContent .= " */\n\n";
-        $configContent .= "// 定义数据库连接常量\n";
-        $configContent .= "define('DB_HOST', '{$config['db_host']}');\n";
-        $configContent .= "define('DB_PORT', '{$config['db_port']}');\n";
-        $configContent .= "define('DB_NAME', '{$config['db_name']}');\n";
-        $configContent .= "define('DB_USER', '{$config['db_user']}');\n";
-        $configContent .= "define('DB_PASS', '{$config['db_password']}');\n";
-        $configContent .= "define('DB_CHARSET', 'utf8mb4');\n";
-        $configContent .= "define('DB_PREFIX', '');\n\n";
-        $configContent .= "// 返回配置数组（兼容使用数组的代码）\n";
-        $configContent .= "return [\n";
-        $configContent .= "    'host' => DB_HOST,\n";
-        $configContent .= "    'port' => DB_PORT,\n";
-        $configContent .= "    'database' => DB_NAME,\n";
-        $configContent .= "    'username' => DB_USER,\n";
-        $configContent .= "    'password' => DB_PASS,\n";
-        $configContent .= "    'charset' => DB_CHARSET,\n";
-        $configContent .= "    'prefix' => DB_PREFIX,\n";
-        $configContent .= "    'options' => [\n";
-        $configContent .= "        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,\n";
-        $configContent .= "        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,\n";
-        $configContent .= "        PDO::ATTR_EMULATE_PREPARES => false,\n";
-        $configContent .= "    ],\n";
+        $configContent = "<?php\nreturn [\n";
+        $configContent .= "    'host' => '{$config['db_host']}',\n";
+        $configContent .= "    'port' => '{$config['db_port']}',\n";
+        $configContent .= "    'database' => '{$config['db_name']}',\n";
+        $configContent .= "    'username' => '{$config['db_user']}',\n";
+        $configContent .= "    'password' => '{$config['db_password']}',\n";
+        $configContent .= "    'charset' => 'utf8mb4'\n";
         $configContent .= "];\n";
         
         file_put_contents(ROOT_PATH . '/backend/config/database.php', $configContent);
-        
-        // 同时创建 admin/config.php
-        $adminConfigContent = "<?php\n";
-        $adminConfigContent .= "/**\n";
-        $adminConfigContent .= " * 数据库配置文件\n";
-        $adminConfigContent .= " * 生成时间: " . date('Y-m-d H:i:s') . "\n";
-        $adminConfigContent .= " */\n\n";
-        $adminConfigContent .= "define('DB_HOST', '{$config['db_host']}');\n";
-        $adminConfigContent .= "define('DB_PORT', '{$config['db_port']}');\n";
-        $adminConfigContent .= "define('DB_NAME', '{$config['db_name']}');\n";
-        $adminConfigContent .= "define('DB_USER', '{$config['db_user']}');\n";
-        $adminConfigContent .= "define('DB_PASS', '{$config['db_password']}');\n";
-        $adminConfigContent .= "define('DB_CHARSET', 'utf8mb4');\n";
-        $adminConfigContent .= "define('DB_PREFIX', '');\n";
-        
-        file_put_contents(ROOT_PATH . '/admin/config.php', $adminConfigContent);
         
         return ['success' => true];
         

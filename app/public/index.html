@@ -695,11 +695,10 @@
                 }
             });
             
-            // 小说卡片点击跳转
-            document.querySelectorAll('.novel-card').forEach((card, index) => {
+            // 小说卡片点击效果
+            document.querySelectorAll('.novel-card').forEach(card => {
                 card.addEventListener('click', function() {
-                    const novelId = index + 1; // 临时使用索引作为ID
-                    window.location.href = '/novel-detail.html?id=' + novelId;
+                    alert('小说详情功能正在开发中，敬请期待！');
                 });
             });
         });
